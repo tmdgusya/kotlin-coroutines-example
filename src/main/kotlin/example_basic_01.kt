@@ -1,20 +1,17 @@
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import java.lang.Thread.sleep
+import kotlin.concurrent.thread
 
-@OptIn(DelicateCoroutinesApi::class)
 fun main() {
 
     /**
      * GlobalScope 는 안을보면 SingleObjcet 로 GlobalScope
      */
-    GlobalScope.launch {
-        delay(1000)
+    thread {
+        sleep(1000)
         println("World") // non-blocking main thread
     }
     println("Hello, ")
-    Thread.sleep(1000) // block main-thread
+    sleep(1000) // block main-thread
 }
 
 /**
