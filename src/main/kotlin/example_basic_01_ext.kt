@@ -3,14 +3,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-fun main() {
-
+fun main() = runBlocking {
     GlobalScope.launch {
         delay(1000)
-        println("World")
+        kotlin.io.println("World")
     }
     println("Hello, ")
-    runBlocking { // blocking 을 해주는 coroutines
-        delay(1000)
-    }
 }

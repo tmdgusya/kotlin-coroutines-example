@@ -1,19 +1,17 @@
-import java.lang.Thread.sleep
-import kotlin.concurrent.thread
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-fun main() {
-
-    /**
-     * GlobalScope 는 안을보면 SingleObjcet 로 GlobalScope
-     * Coroutines -> Thread 로 바꿔도 상관없음 단순 light-weight thread 이다.
-     */
-    // GlobalScope.launch
-    thread {
-        sleep(1000)
-        println("World") // non-blocking main thread
+fun main() = runBlocking { // this: CoroutineScope
+    launch { // launch a new coroutine and continue
+        delay(1000L) // non-blocking delay for 1 second (default time unit is ms)
+        println("World!") // print after delay
     }
-    println("Hello, ")
-    sleep(1000) // block main-thread
+    println("Hello") // main coroutine continues while a previous one is delayed
+
+    // result
+    // Hello
+    // World
 }
 
 /**
