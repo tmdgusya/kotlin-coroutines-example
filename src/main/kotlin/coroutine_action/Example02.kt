@@ -1,41 +1,28 @@
 package coroutine_action
 
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 
-val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
     println(throwable.message)
 }
 
-suspend fun main() = withContext(SupervisorJob() + exceptionHandler) {
-    val a = coroutineScope {
-        delay(1000)
-        throw RuntimeException("Test")
-        10
-    }
-    println("a is calculated")
-    val b = coroutineScope {
-        delay(1000)
-        20
-    }
-    println(a) // 10
-    println(b) // 20
+suspend fun main() {
+    CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
+        val a = launch {
+            delay(1000)
+            throw RuntimeException("Test")
+            10
+        }
+        println("a is calculated")
+        val b = launch {
+            delay(1000)
+            20
+        }
+        println(a) // 10
+        println(b) // 20
+    }.join()
 }
-
-// fun main() = runBlocking {
-//    val a = runBlocking {
-//        delay(3000)
-//        throw RuntimeException("Test")
-//        10
-//    }
-//    println("a is calculated")
-//    val b = runBlocking {
-//        delay(3000)
-//        20
-//    }
-//    println(a) // 10
-//    println(b) // 20
-// }
