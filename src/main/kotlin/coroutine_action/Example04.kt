@@ -2,8 +2,8 @@ package coroutine_action
 
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 private val exceptionHandler = CoroutineExceptionHandler { CoroutineContext, throwable ->
@@ -12,17 +12,17 @@ private val exceptionHandler = CoroutineExceptionHandler { CoroutineContext, thr
 
 suspend fun main() {
     runBlocking(exceptionHandler) {
-        val a = launch(SupervisorJob()) {
-            throw RuntimeException("Test")
+        val a = async(SupervisorJob()) {
+            throw RuntimeException("zzz")
+            10
         }
         println("a is calculated")
-        val b = launch(SupervisorJob()) {
+        val b = async {
             delay(1000)
-            throw RuntimeException("ㅋㅋ")
             20
         }
-        delay(5000)
-        println(a) // 10
-        println(b) // 20
+        delay(1000)
+        println(a.await()) // 10
+        println(b.await()) // 20
     }
 }
