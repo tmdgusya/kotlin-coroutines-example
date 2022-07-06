@@ -1,32 +1,28 @@
 package coroutine_action
 
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+val exceptionHandler = CoroutineExceptionHandler { CoroutineContext, throwable ->
     println(throwable.message)
 }
 
 suspend fun main() {
-    CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
-        println("Current Thread : ${Thread.currentThread().name}")
-        val a = launch {
-            println("Current Thread A : ${Thread.currentThread().name}")
-            delay(1000)
+    runBlocking(exceptionHandler) {
+        val a = launch(SupervisorJob()) {
             throw RuntimeException("Test")
-            10
         }
         println("a is calculated")
-        val b = launch {
-            println("Current Thread B : ${Thread.currentThread().name}")
+        val b = launch(SupervisorJob()) {
             delay(1000)
+            throw RuntimeException("ㅋㅋ")
             20
         }
-        println("Current Thread : ${Thread.currentThread().name}")
+        delay(5000)
         println(a) // 10
         println(b) // 20
-    }.join()
+    }
 }
